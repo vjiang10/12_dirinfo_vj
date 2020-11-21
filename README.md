@@ -1,1 +1,0 @@
-# 12_dirinfo_vj
