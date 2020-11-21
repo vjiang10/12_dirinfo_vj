@@ -11,7 +11,7 @@ int main() {
     struct dirent *entry;
     entry = readdir(d);
     
-    printf("Statistics for directory: %s\n", entry->d_name);
+    printf("Statistics for directory: ");
     
     // calculating total regular file size
     while (entry) {
