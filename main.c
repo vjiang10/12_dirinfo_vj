@@ -3,15 +3,35 @@
 #include <string.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <errno.h>
 
-int main() {
-    DIR *d = opendir(".");
-    int tot_size = 0;
-    struct stat file;
-    struct dirent *entry;
+int main(int argc, char **argv) {
+    DIR *d;
+    char dir_arg[100];
+
+    if (argc > 1) 
+        strcpy(dir_arg, argv[1]);
+    else {
+        printf("Directory to scan: ");
+        fgets(dir_arg, sizeof(dir_arg), stdin);
+    }
+
+    int len = strlen(dir_arg);
+    if (dir_arg[len-1] == '\n')
+        dir_arg[len-1] = '\0';
+
+    d = opendir(dir_arg);
+    if (d == NULL) {
+        printf("errno: %d\nerror: %s\n", errno, strerror(errno));
+        return 0;
+    }
+
+    struct dirent * entry;
     entry = readdir(d);
+    long int tot_size = 0;
+    struct stat file;
     
-    printf("Statistics for directory: .\n");
+    printf("Statistics for directory: %s\n", dir_arg);
     
     // calculating total regular file size
     while (entry) {
@@ -21,7 +41,7 @@ int main() {
         }
         entry = readdir(d);
     }
-    printf("Total Directory Size: %d Bytes\n", tot_size);
+    printf("Total Directory Size: %ld Bytes\n", tot_size);
     
     rewinddir(d);
     entry = readdir(d);
@@ -48,3 +68,4 @@ int main() {
     closedir(d);
     return 0;
 }
+
